@@ -18,4 +18,9 @@ Excel Visual Basic Editorで標準モジュールやクラスモジュールの�
 '
 '   sheetName : シート名
 '==============================================================================================================================
+Public Function aSheetDeleteFormula(ByVal sheetName As String) As Boolean
+  …
+  …
+  …
+End Function
 ```
