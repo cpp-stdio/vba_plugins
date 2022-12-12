@@ -64,7 +64,7 @@ End Sub
 '   特定の拡張子に絞り込む ↑のSearchを先に実行してないと意味ないよ。(やる前にClone関数呼ぶのをおすすめする)
 '   ExtensionName : 例.テキスト(.txt)の場合"txt"と入力して。最初のドットはいらない
 '------------------------------------------------------------------------------------------------------------------------------
-Public Function ExtensionSearch(ExtensionName As String) As Boolean
+Public Function ExtensionSearch(ParamArray extensions() As Variant) As Boolean
     ExtensionSearch = False
     'データがない場合は処理できない
     If HierarchyLength = 0 Then
@@ -72,24 +72,25 @@ Public Function ExtensionSearch(ExtensionName As String) As Boolean
     End If
     
     Dim i As Long:
+    Dim e1 As Variant
+    Dim e2 As Variant
     Dim count As Long: count = 0
     Dim Temporary() As String
     
     For i = 0 To HierarchyLength - 1
         '一番最後が拡張子なので
-        Dim extension As Variant
-        extension = Split(Hierarchical(i), ".")
-        'OSの仕様上、大文字小文字は同じ拡張子
-        If StrComp(UCase(ExtensionName), UCase(extension(UBound(extension))), vbBinaryCompare) = 0 Then
-            ReDim Preserve Temporary(count)
-            Temporary(count) = Hierarchical(i)
-            count = count + 1
-        End If
+        e2 = Split(Hierarchical(i), ".")
+        For Each e1 In extensions
+            'OSの仕様上、大文字小文字は同じ拡張子
+            If StrComp(UCase(CStr(e1)), UCase(e2(UBound(e2))), vbBinaryCompare) = 0 Then
+                ReDim Preserve Temporary(count)
+                Temporary(count) = Hierarchical(i)
+                count = count + 1
+            End If
+        Next e1
     Next i
     'その拡張子がない場合は再構築はしない
-    If count = 0 Then
-        Exit Function
-    End If
+    If count = 0 Then Exit Function
     
     'データの再構築
     HierarchyLength = count

@@ -85,7 +85,7 @@ End Function
 '==============================================================================================================================
 
 '--------------------------------------------------------------
-'   modulePaths : インポートするモジュールのパス名 : 例) Array("Involved_Debug")
+'   modulePaths : インポートするモジュールのフルパス名 : 例) C:\Users\Involved_Debug.bas
 '   book        : インポートするbook情報。設定しないとThisWorkbookが選択されます。
 '--------------------------------------------------------------
 Public Function debugModuleImport(ByRef modulePaths() As String, Optional ByVal book As Workbook = Nothing)
@@ -95,7 +95,7 @@ Public Function debugModuleImport(ByRef modulePaths() As String, Optional ByVal 
     If Not atDevelopment_debugModuleImport = atDevelopmentSwitching.modeDebug Then Exit Function
 
     Dim extension  As String
-    Dim name       As String
+    Dim Name       As String
     Dim textFor    As Variant
     Dim module     As Object 'モジュール
     Dim moduleList As Object 'VBAプロジェクトの全モジュール
@@ -117,14 +117,14 @@ Public Function debugModuleImport(ByRef modulePaths() As String, Optional ByVal 
         '拡張子を小文字で取得
         extension = LCase(fso.GetExtensionName(textFor))
         'パス名から名前を取得
-        name = fso.GetBaseName(textFor)
+        Name = fso.GetBaseName(textFor)
         '拡張子がいずれかの場合、インポートする。
         If StrComp(extension, "cls", vbBinaryCompare) = 0 Or _
             StrComp(extension, "frm", vbBinaryCompare) = 0 Or _
              StrComp(extension, "bas", vbBinaryCompare) = 0 Then
             
             For Each module In moduleList
-                If StrComp(name, module.name, vbBinaryCompare) = 0 Then
+                If StrComp(Name, module.Name, vbBinaryCompare) = 0 Then
                     '同名のモジュール削除
                     Call moduleList.Remove(module)
                     Exit For
@@ -176,11 +176,11 @@ Public Function debugModuleExport(ByRef modules() As String, Optional ByVal book
     For Each module In moduleList
         extension = ""
         '拡張子を指定する。
-        If (module.type = vbext_ct_ClassModule) Then
+        If (module.Type = vbext_ct_ClassModule) Then
             extension = ".cls" 'クラス
-        ElseIf (module.type = vbext_ct_MSForm) Then
+        ElseIf (module.Type = vbext_ct_MSForm) Then
             extension = ".frm" 'フォーム(.frxも一緒にエクスポートされる)
-        ElseIf (module.type = vbext_ct_StdModule) Then
+        ElseIf (module.Type = vbext_ct_StdModule) Then
             extension = ".bas" '標準モジュール
         End If
 
@@ -188,8 +188,8 @@ Public Function debugModuleExport(ByRef modules() As String, Optional ByVal book
         If Not StrComp(extension, "", vbBinaryCompare) = 0 Then
             For Each textFor In modules
                 '配列の中に存在していれば、エクスポートする。
-                If StrComp(textFor, module.name, vbBinaryCompare) = 0 Then
-                    Call module.Export(folderPath + "\" + module.name + extension)
+                If StrComp(textFor, module.Name, vbBinaryCompare) = 0 Then
+                    Call module.Export(folderPath + "\" + module.Name + extension)
                 End If
             Next
         End If
@@ -223,7 +223,7 @@ Public Function debugModuleExportAll(Optional ByVal book As Workbook = Nothing, 
     For Each module In moduleList
         length = length + 1
         ReDim Preserve names(length)
-        names(length) = module.name
+        names(length) = module.Name
     Next
     '保存する
     Call debugModuleExport(names, bookExport, folderPath)

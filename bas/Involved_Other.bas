@@ -110,9 +110,9 @@ Public Function findNumber(ByVal text As String) As Variant()
     '検索実行
     Set matches = reg.Execute(text)
     '検索一致件数だけループ
-    For i = 0 To matches.Count - 1
+    For i = 0 To matches.count - 1
         'コレクションの現ループオブジェクトを取得
-        Set match = matches.item(i)
+        Set match = matches.Item(i)
         '検索一致文字列
         ReDim Preserve returnVariant(i)
         returnVariant(i) = match.value
