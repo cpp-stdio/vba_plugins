@@ -2,79 +2,79 @@ Attribute VB_Name = "Involved_Process"
 Option Explicit
 '##############################################################################################################################
 '
-'   VBA‚ğ“®‚©‚·Û‚É•K—v•s‰ÂŒ‡‚Èˆ—
+'   VBAã‚’å‹•ã‹ã™éš›ã«å¿…è¦ä¸å¯æ¬ ãªå‡¦ç†
 '
-'   V‹Kì¬“ú : 2017/08/30
-'   ÅIXV“ú : 2024/07/05
+'   æ–°è¦ä½œæˆæ—¥ : 2017/08/30
+'   æœ€çµ‚æ›´æ–°æ—¥ : 2024/07/05
 '
-'   V‹Kì¬ƒGƒNƒZƒ‹ƒo[ƒWƒ‡ƒ“ : Office Professional Plus 2010 , 14.0.7145.5000(32ƒrƒbƒg)
-'   ÅIXVƒGƒNƒZƒ‹ƒo[ƒWƒ‡ƒ“ : Microsoft 365 Apps for enterprise
+'   æ–°è¦ä½œæˆã‚¨ã‚¯ã‚»ãƒ«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ : Office Professional Plus 2010 , 14.0.7145.5000(32ãƒ“ãƒƒãƒˆ)
+'   æœ€çµ‚æ›´æ–°ã‚¨ã‚¯ã‚»ãƒ«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ : Microsoft 365 Apps for enterprise
 '
 '##############################################################################################################################
 
-'ƒvƒƒOƒ‰ƒ€ÀsŠÔ‚ğŠJnŒv‘ª—p‚Ì•Ï”
+'ãƒ—ãƒ­ã‚°ãƒ©ãƒ å®Ÿè¡Œæ™‚é–“ã‚’é–‹å§‹è¨ˆæ¸¬ç”¨ã®å¤‰æ•°
 Private beginTime As Date
 
 '==============================================================================================================================
 '
-'   VBA‚ÌƒV[ƒgXV‚Ìˆ—‚ğŒyŒ¸‚³‚¹‚éB
-'   ‚±‚ÌŠÖ”‚ğŒÄ‚Ô‚¾‚¯‚ÅAˆ—ŠÔ‚ª8.5”{‚Ù‚ÇŒüã‚·‚éB
+'   VBAã®ã‚·ãƒ¼ãƒˆæ›´æ–°æ™‚ã®å‡¦ç†ã‚’è»½æ¸›ã•ã›ã‚‹ã€‚
+'   ã“ã®é–¢æ•°ã‚’å‘¼ã¶ã ã‘ã§ã€å‡¦ç†æ™‚é–“ãŒ8.5å€ã»ã©å‘ä¸Šã™ã‚‹ã€‚
 '
-'   QlURL
+'   å‚è€ƒURL
 '   https://tonari-it.com/vba-processing-speed/
 '
 '==============================================================================================================================
 Public Function LEGACY_reduceProcess_ToBegin()
 
-    'ÀsŠÔŒv‘ªŠJn
+    'å®Ÿè¡Œæ™‚é–“è¨ˆæ¸¬é–‹å§‹
     beginTime = Time
     
-    Application.Calculation = xlCalculationManual 'ŒvZƒ‚[ƒh‚ğƒ}ƒjƒ…ƒAƒ‹‚É‚·‚é
-    Application.EnableEvents = False              'ƒCƒxƒ“ƒg‚ğ’â~‚³‚¹‚é
-    Application.ScreenUpdating = False            '‰æ–Ê•\¦XV‚ğ’â~‚³‚¹‚é
+    Application.Calculation = xlCalculationManual 'è¨ˆç®—ãƒ¢ãƒ¼ãƒ‰ã‚’ãƒãƒ‹ãƒ¥ã‚¢ãƒ«ã«ã™ã‚‹
+    Application.EnableEvents = False              'ã‚¤ãƒ™ãƒ³ãƒˆã‚’åœæ­¢ã•ã›ã‚‹
+    Application.ScreenUpdating = False            'ç”»é¢è¡¨ç¤ºæ›´æ–°ã‚’åœæ­¢ã•ã›ã‚‹
     
-        'Application.Cursor = xlWait                   'ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚Ìó‘Ô‚ğ»ŒvŒ^‚É•ÏX
+        'Application.Cursor = xlWait                   'ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®çŠ¶æ…‹ã‚’ç ‚æ™‚è¨ˆå‹ã«å¤‰æ›´
 
 End Function
 
 Public Function LEGACY_reduceProcess_ToEnd()
     
-    Application.Calculation = xlCalculationAutomatic 'ŒvZƒ‚[ƒh‚ğ©“®‚É‚·‚é
-    Application.EnableEvents = True                  'ƒCƒxƒ“ƒg‚ğŠJn‚³‚¹‚é
-    Application.ScreenUpdating = True                '‰æ–Ê•\¦XV‚ğŠJn‚³‚¹‚é
+    Application.Calculation = xlCalculationAutomatic 'è¨ˆç®—ãƒ¢ãƒ¼ãƒ‰ã‚’è‡ªå‹•ã«ã™ã‚‹
+    Application.EnableEvents = True                  'ã‚¤ãƒ™ãƒ³ãƒˆã‚’é–‹å§‹ã•ã›ã‚‹
+    Application.ScreenUpdating = True                'ç”»é¢è¡¨ç¤ºæ›´æ–°ã‚’é–‹å§‹ã•ã›ã‚‹
     
-        'Application.Cursor = xlDefault                   'ƒ}ƒEƒXƒ|ƒCƒ“ƒ^‚Ìó‘Ô‚ğ•W€Œ^‚É•ÏX
+        'Application.Cursor = xlDefault                   'ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ã‚¿ã®çŠ¶æ…‹ã‚’æ¨™æº–å‹ã«å¤‰æ›´
     
-    'ÀsŠÔŒv‘ªI—¹
-    Application.StatusBar = "ˆ—Š®—¹ / ÀsŠÔ‚Í " + Format(Time - beginTime, "nn•ªss•b") + " ‚Å‚µ‚½"
+    'å®Ÿè¡Œæ™‚é–“è¨ˆæ¸¬çµ‚äº†
+    Application.StatusBar = "å‡¦ç†å®Œäº† / å®Ÿè¡Œæ™‚é–“ã¯ " + Format(Time - beginTime, "nnåˆ†ssç§’") + " ã§ã—ãŸ"
     
 End Function
 
 '==============================================================================================================================
-'   100%•\¦‚Å•\‚·ƒoƒƒ[ƒ^[‚ğ’Ç‰Á‚ğƒXƒe[ƒ^ƒXƒo[‚É’Ç‰Á‚·‚é
+'   100%è¡¨ç¤ºã§è¡¨ã™ãƒãƒ­ãƒ¡ãƒ¼ã‚¿ãƒ¼ã‚’è¿½åŠ ã‚’ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã«è¿½åŠ ã™ã‚‹
 '
-'   –ß‚è’l : OK(True), NG(False)
+'   æˆ»ã‚Šå€¤ : OK(True), NG(False)
 '
-'   message : ƒXƒe[ƒ^ƒXƒo[‚É‘‚«‚½‚¢ƒƒbƒZ[ƒW
-'   now     : Œ»İ‚Ì’l(for•¶’†“™‚É‚¨g‚¢‰º‚³‚¢)
-'   max     : ‘S‘Ì”
+'   message : ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒãƒ¼ã«æ›¸ããŸã„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+'   now     : ç¾åœ¨ã®å€¤(foræ–‡ä¸­ç­‰ã«ãŠä½¿ã„ä¸‹ã•ã„)
+'   max     : å…¨ä½“æ•°
 '==============================================================================================================================
-Public Function LEGACY_StatusBar_100barometer(message As String, now As Long, max As Long)
+Public Function LEGACY_100Barometer(message As String, now As Long, max As Long)
 
-    LEGACY_StatusBar_100barometer = False
+    LEGACY_100Barometer = False
 
-    '0œZ‘Îô
+    '0é™¤ç®—å¯¾ç­–
     If max <= 0 Then Exit Function
     
     Dim text As String
     text = message + " ( " + CStr(CLng(now / max * 100)) + "% : " + CStr(now) + "/" + CStr(max) + ") "
     
-    '100%’´‚¦‚Í¡‚â ‚Ì•\¦‚ª‚¨‚©‚µ‚­‚È‚é‚½‚ß
+    '100%è¶…ãˆã¯â– ã‚„â–¡ã®è¡¨ç¤ºãŒãŠã‹ã—ããªã‚‹ãŸã‚
     If now <= max Then
-        text = text + String(CLng(now / max * 10), "¡") + String(10 - CLng(now / max * 10), " ")
+        text = text + String(CLng(now / max * 10), "â– ") + String(10 - CLng(now / max * 10), "â–¡")
     End If
     
     Application.StatusBar = text
-    LEGACY_StatusBar_100barometer = True
+    LEGACY_100Barometer = True
 
 End Function
