@@ -5,10 +5,10 @@ Option Explicit
 '   シート関連
 '
 '   新規作成日 : 2017/08/30
-'   最終更新日 : 2022/11/28
+'   最終更新日 : 2024/07/05
 '
 '   新規作成エクセルバージョン : Office Professional Plus 2010 , 14.0.7145.5000(32ビット)
-'   最終更新エクセルバージョン : Office Professional Plus 2016 , 16.0.5.56.1000(32ビット)
+'   最終更新エクセルバージョン : Microsoft 365 Apps for enterprise
 '
 '##############################################################################################################################
 
@@ -19,22 +19,21 @@ Option Explicit
 '
 '   sheetName : シート名
 '==============================================================================================================================
-Public Function checkSheetName(ByVal sheetName As String) As Boolean
-    checkSheetName = False
+Public Function LEGACY_checkSheetName(ByVal sheetname As String) As Boolean
+    LEGACY_checkSheetName = False
     '条件その1 : 空の名前ではない。
-    If StrComp(sheetName, "", vbBinaryCompare) = 0 Then Exit Function
+    If StrComp(sheetname, "", vbBinaryCompare) = 0 Then Exit Function
     '条件その2 : 含んではいけない文字列がない。
     Dim textFor As Variant
     For Each textFor In Array(":", "\", "/", "?", "*", "[", "]")
-        If InStr(sheetName, CStr(textFor)) > 0 Then Exit Function
+        If InStr(sheetname, CStr(textFor)) > 0 Then Exit Function
     Next textFor
     '条件その3 : 名前は31文字以内である。
-    If Len(sheetName) > 31 Then Exit Function
+    If Len(sheetname) > 31 Then Exit Function
     '条件その4 : 同名のシートは存在出来ない。
     'aNewSheetにて不具合が発生したので分割する。
-    checkSheetName = True
+    LEGACY_checkSheetName = True
 End Function
-
 '==============================================================================================================================
 '   等しい名前のシートを探す
 '
@@ -43,21 +42,20 @@ End Function
 '   sheetName : シート名
 '   book : 対象のブック（任意）
 '==============================================================================================================================
-Public Function sheetToEqualsName(ByVal sheetName As String, Optional ByRef book As Workbook = Nothing) As Worksheet
+Public Function LEGACY_sheetToEqualsName(ByVal sheetname As String, Optional ByRef book As Workbook = Nothing) As Worksheet
 
     Dim searchBook As Workbook
     Set searchBook = isBook(book)
 
     Dim sheet As Worksheet
     For Each sheet In searchBook.sheets
-        If StrComp(sheet.Name, sheetName, vbBinaryCompare) = 0 Then
-            Set sheetToEqualsName = sheet
+        If StrComp(sheet.name, sheetname, vbBinaryCompare) = 0 Then
+            Set LEGACY_sheetToEqualsName = sheet
             Exit Function
         End If
     Next
-    Set sheetToEqualsName = Nothing
+    Set LEGACY_sheetToEqualsName = Nothing
 End Function
-
 '==============================================================================================================================
 '   新たなシートを作成
 '
@@ -67,27 +65,84 @@ End Function
 '   sheetName : シート名
 '   book : 対象のブック（任意、未入力の場合ThisWorkbook）
 '==============================================================================================================================
-Public Function aNewSheet(ByVal sheetName As String, Optional ByRef book As Workbook = Nothing) As Worksheet
-    Set aNewSheet = Nothing
+Public Function LEGACY_aNewSheet(ByVal sheetname As String, Optional ByRef book As Workbook = Nothing) As Worksheet
+    Set LEGACY_aNewSheet = Nothing
     '適切な名前でない場合
-    If Not checkSheetName(sheetName) Then Exit Function
+    If Not LEGACY_checkSheetName(sheetname) Then Exit Function
     '対象のブックが入力されていない場合
     Dim addBook As Workbook
     Set addBook = isBook(book)
     '作成済みかを検索
     Dim sheet As Worksheet
-    Set sheet = sheetToEqualsName(sheetName, addBook)
+    Set sheet = LEGACY_sheetToEqualsName(sheetname, addBook)
     If Not sheet Is Nothing Then
-        Set aNewSheet = sheet
+        Set LEGACY_aNewSheet = sheet
         Exit Function
     End If
-    '新たなシートを作成
-    Set sheet = addBook.sheets.add()
-    sheet.Name = sheetName
+    '新たなシートを末尾へ作成する
+    addBook.sheets.add After:=Worksheets(Worksheets.count)
+    Set sheet = addBook.sheets.Item(addBook.sheets.count)
+    sheet.name = sheetname
     sheet.Activate 'アクティブ化しておいた方が見た目は良い。
-    Set aNewSheet = sheet
+    Set LEGACY_aNewSheet = sheet
 End Function
+'==============================================================================================================================
+'   ブック内にある全シート名を取得
+'
+'   戻り値 :見つかったシート名を配列Stringとして返却する
+'           作成出来なかった場合はNothingが返却される
+'
+'   book : 対象のブック（任意、未入力の場合ThisWorkbook）
+'==============================================================================================================================
+Public Function LEGACY_getSheetNames(Optional ByRef book As Workbook = Nothing) As String()
+    Dim r() As String
+    Dim l As Long: l = 0
+    '対象のブックが入力されていない場合
+    Dim getBook As Workbook
+    Set getBook = isBook(book)
+    Dim sheet As Worksheet
+    For Each sheet In getBook.sheets
+        ReDim Preserve r(l)
+        r(l) = sheet.name
+        l = l + 1
+    Next
+    LEGACY_getSheetNames = r
+End Function
+'==============================================================================================================================
+'       long型の数値から列番号(AX等)が必要になる場合がセルに数式を埋め込んで速度上昇を狙い際にいるが一行で出来た方がいいと判断したため
+'
+'   column : 変換したいLong型
+'==============================================================================================================================
+Public Function LEGACY_isColumnNumber_toString(column As Long) As String
+    LEGACY_isColumnNumber_toString = ""
 
+    If column <= 0 Then Exit Function
+    
+    Dim tmp As Variant
+    tmp = Split(Cells(1, column).Address(True, False), "$")
+    LEGACY_isColumnNumber_toString = tmp(0)
+
+End Function
+'==============================================================================================================================
+'   Long型等の数値からString型(AX10)等のアルファベット文字列型の変更する
+'   行情報セットタイプ
+'
+'   戻り値 : NG／空白 , OK／空白以外のアルファベット数文字
+'
+'       row    : 変換したいLong型
+'   column : 変換したいLong型
+'==============================================================================================================================
+Public Function LEGACY_isColumnNumberAndRow_toString(row As Long, column As Long) As String
+    LEGACY_isColumnNumberAndRow_toString = ""
+
+    If row <= 0 Then Exit Function
+    If column <= 0 Then Exit Function
+    
+    Dim tmp As Variant
+    tmp = Split(Cells(row, column).Address(True, False), "$")
+    LEGACY_isColumnNumberAndRow_toString = tmp(0) + tmp(1)
+
+End Function
 '==============================================================================================================================
 '   シートを削除する
 '
@@ -96,19 +151,19 @@ End Function
 '   sheet : 削除するシート。成功した場合、アクセス不可になるので注意が必要
 '   book  : 対象のブック（任意）
 '==============================================================================================================================
-Public Function aDeletedSheet(ByVal sheetName As String, Optional ByRef book As Workbook = Nothing) As Boolean
+Public Function LEGACY_aDeletedSheet(ByVal sheetname As String, Optional ByRef book As Workbook = Nothing) As Boolean
     Dim sheet As Worksheet
-    Set sheet = sheetToEqualsName(sheetName, book)
-    aDeletedSheet = aDeletedSheetEx(sheet, book)
+    Set sheet = LEGACY_sheetToEqualsName(sheetname, book)
+    LEGACY_aDeletedSheet = LEGACY_aDeletedSheetEx(sheet, book)
     Set sheet = Nothing
 End Function
 
-Public Function aDeletedSheetEx(ByRef sheet As Worksheet, Optional ByRef book As Workbook = Nothing) As Boolean
-    aDeletedSheetEx = False
+Public Function LEGACY_aDeletedSheetEx(ByRef sheet As Worksheet, Optional ByRef book As Workbook = Nothing) As Boolean
+    LEGACY_aDeletedSheetEx = False
     
     If sheet Is Nothing Then
         'Nothingなので、既に削除済みと仮定する。
-        aDeletedSheetEx = True
+        LEGACY_aDeletedSheetEx = True
         Exit Function
     End If
     
@@ -119,10 +174,10 @@ Public Function aDeletedSheetEx(ByRef sheet As Worksheet, Optional ByRef book As
     
     Dim deleteSheet As Worksheet
     For Each deleteSheet In deleteBook.sheets
-        If StrComp(sheet.Name, deleteSheet.Name, vbBinaryCompare) = 0 Then
-            Call deleteBook.sheets(sheet.Name).Delete
+        If StrComp(sheet.name, deleteSheet.name, vbBinaryCompare) = 0 Then
+            Call deleteBook.sheets(sheet.name).delete
             Set sheet = Nothing  'シートを削除する
-            aDeletedSheetEx = True '戻り値を変更
+            LEGACY_aDeletedSheetEx = True '戻り値を変更
             Exit For
         End If
     Next
@@ -130,24 +185,24 @@ Public Function aDeletedSheetEx(ByRef sheet As Worksheet, Optional ByRef book As
     'メッセージを表示状態に戻す
     Application.DisplayAlerts = True
 End Function
-'==============================================================================================================================
+'------------------------------------------------------------------------------------------------------------------------------
 '   シートの情報を全て削除する
 '
 '   sheet : 対象シート
-'==============================================================================================================================
-Public Function aInfoErasureSheet(ByRef sheet As Worksheet)
+'------------------------------------------------------------------------------------------------------------------------------
+Public Function LEGACY_aInfoErasureSheet(ByRef sheet As Worksheet)
     Dim i As Long: i = 0
     'セルを全て削除
-    sheet.cells.Clear
-    sheet.Columns.Clear
-    sheet.Rows.Clear
+    sheet.Cells.clear
+    sheet.Columns.clear
+    sheet.Rows.clear
     'テーブルの情報を削除
     For i = sheet.ListObjects.count To 1 Step -1
-        Call sheet.ListObjects.Item(i).Delete
+        Call sheet.ListObjects.Item(i).delete
     Next i
     '埋め込みグラフを削除
     For i = sheet.ChartObjects.count To 1 Step -1
-        Call sheet.ChartObjects(i).Delete
+        Call sheet.ChartObjects(i).delete
     Next i
     '印刷時のページ区切りを削除
     'sheet.DisplayPageBreaks = False
@@ -157,7 +212,7 @@ Public Function aInfoErasureSheet(ByRef sheet As Worksheet)
     Next i
     '図、クリップアート、図形、SmartArtの削除
     For i = sheet.Shapes.count To 1 Step -1
-        Call sheet.Shapes.Item(i).Delete
+        Call sheet.Shapes.Item(i).delete
     Next i
     'ヘッター、フッターは完全に削除することは不可能らしい
     With sheet.PageSetup
@@ -179,6 +234,7 @@ Public Function aInfoErasureSheet(ByRef sheet As Worksheet)
     End With
     
 End Function
+
 '==============================================================================================================================
 '   シート内で入力されている数式を値に変換する
 '   ※1　利用する場合は「Involved_Other.bas」のインポートをお願いします
@@ -189,19 +245,27 @@ End Function
 '
 '   sheetName : シート名
 '==============================================================================================================================
-Public Function aSheetDeleteFormula(ByVal sheetName As String, Optional ByRef book As Workbook = Nothing) As Boolean
-    Dim sheet As Worksheet
-    Set sheet = sheetToEqualsName(sheetName, book)
-    aSheetDeleteFormula = aSheetDeleteFormulaDx(sheet)
-    Set sheet = Nothing
-End Function
+Public Function LEGACY_aSheetDeleteFormula(ByVal sheetname As String, Optional ByRef book As Workbook = Nothing) As Boolean
+    LEGACY_aSheetDeleteFormula = False
 
-Public Function aSheetDeleteFormulaDx(ByRef sheet As Worksheet) As Boolean
-    aSheetDeleteFormulaDx = False
+    Dim sheet As Worksheet
+    Set sheet = LEGACY_sheetToEqualsName(sheetname, book)
     If sheet Is Nothing Then Exit Function
     
-    Dim base As range
-    Dim cell As range
+    LEGACY_aSheetDeleteFormula = LEGACY_aSheetDeleteFormulaDx(sheet)
+    Set sheet = Nothing
+End Function
+'------------------------------------------------------------------------------------------------------------------------------
+'   シート用 ver.
+'
+'   sheet : シートを挿入(Nothingの場合無効)
+'------------------------------------------------------------------------------------------------------------------------------
+Public Function LEGACY_aSheetDeleteFormulaDx(ByRef sheet As Worksheet) As Boolean
+    LEGACY_aSheetDeleteFormulaDx = False
+    If sheet Is Nothing Then Exit Function
+    
+    Dim base As Range
+    Dim cell As Range
     Dim row As Long
     Dim rowMax As Long
     Dim column As Long
@@ -209,7 +273,7 @@ Public Function aSheetDeleteFormulaDx(ByRef sheet As Worksheet) As Boolean
     Dim text As String
     Dim value As Variant
     
-    Set base = sheet.UsedRange.range("A1")
+    Set base = sheet.UsedRange.Range("A1")
     rowMax = sheet.UsedRange.Rows.count - 1
     columnMax = sheet.UsedRange.Columns.count - 1
     
@@ -233,9 +297,63 @@ Public Function aSheetDeleteFormulaDx(ByRef sheet As Worksheet) As Boolean
     
     Set base = Nothing
     Set cell = Nothing
-    aSheetDeleteFormulaDx = True
+    LEGACY_aSheetDeleteFormulaDx = True
 End Function
+'==============================================================================================================================
+'   特定のシート名を別ブックのとして特定の場所に保存する
+'
+'   戻り値 : Workbook（NGの場合はNothingが返却される）
+'
+'   sheetname   : シート名
+'   filename    : 保存名（空白の場合は「シート名.xlsx」となる）
+'   pathname    : パス名（空白の場合は本体のブックと同階層になる）
+'   book        : ブック（Nothingの場合はThisWorkbookとしてみなす）
+'==============================================================================================================================
+Public Function LEGACY_saveSheet(ByVal sheetname As String, Optional ByVal fileName As String = "", _
+                          Optional ByVal pathname As String = "", Optional ByRef book As Workbook = Nothing) As Workbook
+    
+    Set saveSheet = Nothing
 
+    Dim sheet As Worksheet
+    Set sheet = LEGACY_sheetToEqualsName(sheetname, book)
+    
+    Set LEGACY_saveSheet = LEGACY_saveSheetEx(sheet, fileName, pathname)
+    Set sheet = Nothing
+    
+End Function
+'------------------------------------------------------------------------------------------------------------------------------
+'   シート用 ver.
+'
+'   sheet       : シート本体
+'   filename    : 保存名（空白の場合は「シート名.xlsx」となる）
+'   pathname    : パス名（空白の場合は本体のブックと同階層になる）
+'------------------------------------------------------------------------------------------------------------------------------
+Public Function LEGACY_saveSheetEx(ByRef sheet As Worksheet, Optional fileName As String = "", _
+                                                      Optional pathname As String = "") As Workbook
+                            
+    Set LEGACY_saveSheetEx = Nothing
+
+    If sheet Is Nothing Then Exit Function
+    
+    If StrComp(fileName, "", vbBinaryCompare) = 0 Then
+        fileName = sheet.name + ".xlsx"
+    End If
+    
+    If StrComp(pathname, "", vbBinaryCompare) = 0 Then
+        pathname = ThisWorkbook.path
+    End If
+    
+    sheet.copy                        '別のブックへコピー
+    
+    Application.DisplayAlerts = False '下の関数を動かすとメッセージが表示されてしまうため
+    Call ActiveWorkbook.SaveAs(pathname + "\" + fileName)
+    'Call ActiveWorkbook.Activate
+    Application.DisplayAlerts = True  'メッセージ表示防止解除
+
+    Set LEGACY_saveSheetEx = ActiveWorkbook
+    
+End Function
+    
 '==============================================================================================================================
 '   ブックの有無
 '==============================================================================================================================

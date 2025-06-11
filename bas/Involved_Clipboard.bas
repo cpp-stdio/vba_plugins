@@ -6,10 +6,10 @@ Option Explicit
 '   使用するには、「Microsoft Forms 2.0 Object Library」を参照設定します。
 '
 '   新規作成日 : 2017/08/30
-'   最終更新日 : 2017/08/31
+'   最終更新日 : 2024/01/30
 '
 '   新規作成エクセルバージョン : Office Professional Plus 2010 , 14.0.7145.5000(32ビット)
-'   最終更新エクセルバージョン : Office Professional Plus 2010 , 14.0.7145.5000(32ビット)
+'   最終更新エクセルバージョン : Microsoft 365 Apps for enterprise
 '
 '##############################################################################################################################
 
@@ -18,7 +18,7 @@ Option Explicit
 '
 '   text : クリップボードにアップするテキスト情報
 '==============================================================================================================================
-Public Function SetClipboard_Text(ByVal text As String)
+Public Function LEGACY_SetClipboard_Text(ByVal text As String)
     If StrComp(text, "", vbBinaryCompare) = 0 Then Exit Function
     With New MSForms.DataObject
         .SetText text
@@ -29,7 +29,7 @@ End Function
 '==============================================================================================================================
 '   クリップボードから文字列を取得する。
 '==============================================================================================================================
-Public Function GetClipboard_Text() As String
+Public Function LEGACY_GetClipboard_Text() As String
     Dim text As String: text = ""
     With New MSForms.DataObject
         .GetFromClipboard

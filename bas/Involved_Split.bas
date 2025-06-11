@@ -5,16 +5,16 @@ Option Explicit
 '   文字列分割関連
 '
 '   新規作成日 : 2017/08/30
-'   最終更新日 : 2019/11/05
+'   最終更新日 : 2024/01/30
 '
 '   新規作成エクセルバージョン : Office Professional Plus 2010 , 14.0.7145.5000(32ビット)
-'   最終更新エクセルバージョン : Office Professional Plus 2010 , 14.0.7145.5000(32ビット)
+'   最終更新エクセルバージョン : Microsoft 365 Apps for enterprise
 '
 '##############################################################################################################################
 
 '==============================================================================================================================
 '   文字の中にある、特定の文字列から特定の文字列までを取得する
-'   戻り値 : 分割した文字列、Splitと名だが、specificAとspecificBも挿入されるので注意。
+'   戻り値 : 分割した文字列、Splitと名だが本家とは違い「specificA」と「specificB」も引数として必須なので注意
 '
 '   text      : とある文字列
 '   specificA : 1つ目の特定の文字列
@@ -26,19 +26,19 @@ Option Explicit
 '       textArray = BetweenSplit(text, "<HEAD>", "</HEAD>")
 '       > ("<HTML>","<HEAD>","HOGEHOGE","</HEAD>","<HEAD>","GEHOGEHO","</HEAD>","</HTML>")
 '==============================================================================================================================
-Public Function BetweenSplit(ByVal text As String, ByVal specificA As String, ByVal specificB As String) As String()
+Public Function LEGACY_BetweenSplit(ByVal text As String, ByVal specificA As String, ByVal specificB As String) As String()
     Dim returnLength As Long: returnLength = 0
     Dim returnString() As String
     ReDim returnString(returnLength)
     'エラー対応のため戻り値を初期化
-    BetweenSplit = returnString
+    LEGACY_BetweenSplit = returnString
     '空白の挿入を確認
     If StrComp(text, "", vbBinaryCompare) = 0 Then Exit Function
     If StrComp(specificA, "", vbBinaryCompare) = 0 Then Exit Function
     If StrComp(specificB, "", vbBinaryCompare) = 0 Then Exit Function
     '同じ文字列なら用途が違う為
     If StrComp(specificA, specificB, vbBinaryCompare) = 0 Then
-        BetweenSplit = Split(text, specificA)
+        LEGACY_BetweenSplit = Split(text, specificA)
         Exit Function
     End If
 
@@ -88,7 +88,7 @@ Public Function BetweenSplit(ByVal text As String, ByVal specificA As String, By
             End If
         End If
     Next count1
-    BetweenSplit = returnString
+    LEGACY_BetweenSplit = returnString
 End Function
 
 '==============================================================================================================================
@@ -101,10 +101,10 @@ End Function
 '   その他、引数の説明は下記URLを参照
 '   https://docs.microsoft.com/ja-jp/office/vba/language/reference/user-interface-help/split-function
 '==============================================================================================================================
-Public Function Splits(ByVal expression As String, delimiters() As String, Optional ByVal limit As Long = -1, Optional ByVal compare As VbCompareMethod = vbBinaryCompare, Optional ByVal min As Long = 0, Optional ByVal max As Long = -1) As String()
+Public Function LEGACY_Splits(ByVal expression As String, delimiters() As String, Optional ByVal limit As Long = -1, Optional ByVal compare As VbCompareMethod = vbBinaryCompare, Optional ByVal min As Long = 0, Optional ByVal max As Long = -1) As String()
     Dim returnString() As String
     ReDim returnString(0)
-    Splits = returnString
+    LEGACY_Splits = returnString
     If UBound(delimiters) < 0 Then Exit Function
     If min < 0 Then Exit Function
     If max < 0 Or max > UBound(delimiters) Then max = UBound(delimiters)
@@ -115,14 +115,14 @@ Public Function Splits(ByVal expression As String, delimiters() As String, Optio
     Dim limitCount As Long, limitString As String
     '-1の部分はlimitなのでこれで良い
     textArray = Split(expression, delimiters(min), -1, compare)
-    Splits = textArray
+    LEGACY_Splits = textArray
     If min = max Then Exit Function
     If min >= UBound(delimiters) Then Exit Function
 
     For textCount = 0 To UBound(textArray)
         If Not StrComp(textArray(textCount), "", vbBinaryCompare) = 0 Then
             '-1の部分はlimitなのでこれで良い
-            bodyArray = Splits(textArray(textCount), delimiters, -1, compare, min + 1, max)
+            bodyArray = LEGACY_Splits(textArray(textCount), delimiters, -1, compare, min + 1, max)
             For bodyCount = 0 To UBound(bodyArray)
                 If Not StrComp(bodyArray(bodyCount), "", vbBinaryCompare) = 0 Then
                     ReDim Preserve returnString(returnLength)
@@ -136,12 +136,12 @@ Public Function Splits(ByVal expression As String, delimiters() As String, Optio
                         Next limitCount
 
                         returnString(returnLength - 1) = limitString
-                        Splits = returnString
+                        LEGACY_Splits = returnString
                         Exit Function
                     End If
                 End If
             Next bodyCount
         End If
     Next
-    Splits = returnString
+    LEGACY_Splits = returnString
 End Function
