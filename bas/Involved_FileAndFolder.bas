@@ -2,41 +2,43 @@ Attribute VB_Name = "Involved_FileAndFolder"
 Option Explicit
 '##############################################################################################################################
 '
-'   ƒtƒHƒCƒ‹ŠÖ˜A
+'   ãƒ•ã‚¡ã‚¤ãƒ«ï¼†ãƒ•ã‚©ãƒ«ãƒ€é–¢é€£
+'   æ—§å : Involved_File.bas
+'   FolderHierarchyRead.clsã¯ãƒ•ã‚©ãƒ«ãƒ€ã®éšå±¤èª­ã¿è¾¼ã¿ã«å¯¾å¿œã—ãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ãªã®ã§ä½µã›ã¦ãŠä½¿ã„ãã ã•ã„
 '
-'   V‹Kì¬“ú : 2017/08/30
-'   ÅIXV“ú : 2024/01/30
+'   æ–°è¦ä½œæˆæ—¥ : 2017/08/30
+'   æœ€çµ‚æ›´æ–°æ—¥ : 2025/06/12
 '
-'   V‹Kì¬ƒGƒNƒZƒ‹ƒo[ƒWƒ‡ƒ“ : Office Professional Plus 2010 , 14.0.7145.5000(32ƒrƒbƒg)
-'   ÅIXVƒGƒNƒZƒ‹ƒo[ƒWƒ‡ƒ“ : Microsoft 365 Apps for enterprise
+'   æ–°è¦ä½œæˆã‚¨ã‚¯ã‚»ãƒ«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ : Office Professional Plus 2010 , 14.0.7145.5000(32ãƒ“ãƒƒãƒˆ)
+'   æœ€çµ‚æ›´æ–°ã‚¨ã‚¯ã‚»ãƒ«ãƒãƒ¼ã‚¸ãƒ§ãƒ³ : Microsoft 365 Apps for enterprise
 '
 '##############################################################################################################################
 
 '==============================================================================================================================
-'   ƒtƒ@ƒCƒ‹–¼‚ğŠm”F‚·‚éB
+'   ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ç¢ºèªã™ã‚‹ã€‚
 '
-'   –ß‚è’l : OK(True), NG(False)
+'   æˆ»ã‚Šå€¤ : OK(True), NG(False)
 '
-'   fileName : ƒtƒ@ƒCƒ‹–¼
+'   fileName : ãƒ•ã‚¡ã‚¤ãƒ«å
 '==============================================================================================================================
 Public Function LEGACY_checkFileName(ByVal fileName As String) As Boolean
     LEGACY_checkFileName = False
-    'ğŒ‚»‚Ì1 : ‹ó‚Ì–¼‘O‚Å‚Í‚È‚¢B
+    'æ¡ä»¶ãã®1 : ç©ºã®åå‰ã§ã¯ãªã„ã€‚
     If StrComp(fileName, "", vbBinaryCompare) = 0 Then Exit Function
-    'ğŒ‚»‚Ì2 : ŠÜ‚ñ‚Å‚Í‚¢‚¯‚È‚¢•¶š—ñ‚ª‚È‚¢B
+    'æ¡ä»¶ãã®2 : å«ã‚“ã§ã¯ã„ã‘ãªã„æ–‡å­—åˆ—ãŒãªã„ã€‚
     Dim textFor As Variant
-    For Each textFor In Array("", "/", ":", "*", "?", """", "<", ">", "|")
+    For Each textFor In Array("ï¿¥", "/", ":", "*", "?", """", "<", ">", "|")
         If InStr(fileName, CStr(textFor)) > 0 Then Exit Function
     Next textFor
     LEGACY_checkFileName = True
 End Function
 
 '==============================================================================================================================
-'   ƒtƒ@ƒCƒ‹“Ç‚İ‚İA‚ ‚é’ö“x‚Ì•¶šƒR[ƒh‚É‘Î‰‚µ‚Ä‚¢‚éB
-'   –ß‚è’l : ‚»‚Ì“Ç‚İ‚ñ‚¾ƒtƒ@ƒCƒ‹‚Ì•¶š—ñ: ƒGƒ‰[‚Ìê‡‚Í‹ó”’
+'   ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ã€ã‚ã‚‹ç¨‹åº¦ã®æ–‡å­—ã‚³ãƒ¼ãƒ‰ã«å¯¾å¿œã—ã¦ã„ã‚‹ã€‚
+'   æˆ»ã‚Šå€¤ : ãã®èª­ã¿è¾¼ã‚“ã ãƒ•ã‚¡ã‚¤ãƒ«ã®æ–‡å­—åˆ—: ã‚¨ãƒ©ãƒ¼ã®å ´åˆã¯ç©ºç™½
 '
-'   fileName       : ƒtƒ‹ƒpƒX
-'   characterCord  : •¶šƒR[ƒhw’è(”CˆÓ) , ‰Šú’l(Shift_JIS),(”ñ„§F_autodetect_all)
+'   fileName       : ãƒ•ãƒ«ãƒ‘ã‚¹
+'   characterCord  : æ–‡å­—ã‚³ãƒ¼ãƒ‰æŒ‡å®š(ä»»æ„) , åˆæœŸå€¤(Shift_JIS),(éæ¨å¥¨ï¼š_autodetect_all)
 '==============================================================================================================================
 Public Function LEGACY_readFile(ByVal fileName As String, Optional ByVal characterCord As String = "Shift_JIS") As String
     LEGACY_readFile = ""
@@ -53,7 +55,7 @@ On Error GoTo readFile_ErrorHandler
         .Close
     End With
 
-    LEGACY_readFile = Body 'Œ´•¶•Û
+    LEGACY_readFile = Body 'åŸæ–‡ä¿æŒ
     Exit Function
 readFile_ErrorHandler:
     LEGACY_readFile = ""
